@@ -1,4 +1,4 @@
-<?
+<?php
 	/*
 		When drawing a field type you are provided with the $field array with the following keys:
 			"title" — The title given by the developer to draw as the label (drawn automatically)
@@ -19,11 +19,18 @@
 		}
 	} else {
 		$preview_image = false;
-	}	
+	}
+
+	$youtube = new BigTreeYouTubeAPI;
+	if (!$youtube->Connected) {
+?>
+<p class="error_message">The <a href="<?=ADMIN_ROOT?>developer/services/youtube/">YouTube API</a> is not connected.</p>
+<?php
+	} else {
 ?>
 <div class="image_field">
-	<input<? if ($field["required"]) { ?> class="required"<? } ?> type="text" tabindex="<?=$field["tabindex"]?>" name="<?=$field["key"]?>[new]" id="<?=$field["id"]?>" placeholder="YouTube or Vimeo URL" />
-	<? if ($preview_image) { ?>
+	<input<?php if ($field["required"]) { ?> class="required"<?php } ?> type="text" tabindex="<?=$field["tabindex"]?>" name="<?=$field["key"]?>[new]" id="<?=$field["id"]?>" placeholder="YouTube or Vimeo URL" />
+	<?php if ($preview_image) { ?>
 	<div class="currently">
 		<a href="#" class="remove_resource"></a>
 		<div class="currently_wrapper">
@@ -32,5 +39,8 @@
 		<label>CURRENT</label>
 		<input type="hidden" name="<?=$field["key"]?>[existing]" value="true" />
 	</div>
-	<? } ?>
+	<?php } ?>
 </div>
+<?php
+	}
+?>

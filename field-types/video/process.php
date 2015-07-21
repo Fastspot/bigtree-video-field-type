@@ -49,39 +49,25 @@
 			// Got our YouTube ID
 			} else {
 				$video_id = $matches[1];
-				$source_image = false;
-				$json = json_decode(BigTree::cURL("http://gdata.youtube.com/feeds/api/videos/$video_id?v=2&prettyprint=true&alt=json"),true);
+				$youtube = new BigTreeYouTubeAPI;
+				$video = $youtube->getVideo($video_id);
 				
 				// Invalid YouTube video :(
-				if (!array_filter((array)$json)) {
+				if (!$video) {
 					$bigtree["errors"][] = array("field" => $field["title"], "error" => "The YouTube URL provided is invalid.");
 					$field["ignore"] = true;	
-				
-				// Good video
 				} else {
-					// See if we have the max res clip image
-					$maxres = BigTree::urlExists("http://i.ytimg.com/vi/$video_id/maxresdefault.jpg");
-					if ($maxres) {
-						$source_image = "http://i.ytimg.com/vi/$video_id/maxresdefault.jpg";
-
-					// No nice big image, we'll have to ask the YouTube API for a list of available thumbnails
-					} else {
-						$width = 0;
-						foreach ($json["entry"]['media$group']['media$thumbnail'] as $thumb) {
-							if ($thumb["width"] > $width) {
-								$width = $thumb["width"];
-								$source_image = $thumb["url"];
-							}
-						}
-					}
+					// Try for max resolution first, then high, then default
+					$source_image = $video->Images->Maxres ? $video->Images->Maxres : $video->Images->High;
+					$source_image = $source_image ? $source_image : $video->Images->Default;
 
 					$field["output"] = array(
 						"service" => "youtube",
 						"id" => $video_id,
 						"height" => false,
 						"width" => false,
-						"duration" => $json["entry"]['media$group']['yt$duration']['seconds'],
-						"embed" => false
+						"duration" => ($video->Duration->Hours * 3600 + $video->Duration->Minutes * 60 + $video->Duration->Seconds),
+						"embed" => $video->Embed
 					);
 				}
 			}
