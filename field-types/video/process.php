@@ -11,6 +11,20 @@
 		If you intend to allow HTML tags you will want to run htmlspecialchars in your drawing file on your value and leave it off in the process file.
 	*/
 
+	// Grab any min width/heights from prefixes
+	if (!empty($field["options"]["preset"])) {
+		if (!isset($bigtree["media_settings"])) {
+			$bigtree["media_settings"] = $cms->getSetting("bigtree-internal-media-settings");
+		}
+		$preset = $bigtree["media_settings"]["presets"][$field["options"]["preset"]];
+		if (!empty($preset["min_width"])) {
+			$field["options"]["min_width"] = $preset["min_width"];
+		}
+		if (!empty($preset["min_height"])) {
+			$field["options"]["min_height"] = $preset["min_height"];
+		}
+	}
+
 	// Setup minimum image width/height
 	$min_width = empty($field["options"]["min_width"]) ? 0 : intval($field["options"]["min_width"]);
 	$min_height = empty($field["options"]["min_height"]) ? 0 : intval($field["options"]["min_height"]);
@@ -120,6 +134,7 @@
 			
 			// Normally we'd fail, but it's not like you can create a higher resolution video clip here.
 			if ($width < $min_width || $height < $min_height) {
+				die("are we getting here?");
 				BigTree::createUpscaledImage($local_image_copy,$local_image_copy,$min_width,$min_height);
 			}
 
@@ -135,6 +150,10 @@
 
 	// Using existing value
 	} else {
-		$field["ignore"] = true;
+		if ($field["input"]["existing"]) {
+			$field["output"] = json_decode($field["input"]["existing"]);
+		} else {
+			$field["ignore"] = true;
+		}
 	}
 ?>

@@ -37,7 +37,7 @@
 			<img src="<?=$preview_image?>" alt="" />
 		</div>
 		<label>CURRENT</label>
-		<input type="hidden" name="<?=$field["key"]?>[existing]" value="true" />
+		<input type="hidden" name="<?=$field["key"]?>[existing]" value="<?=BigTree::safeEncode(json_encode($field["value"]))?>" />
 	</div>
 	<?php } ?>
 </div>
