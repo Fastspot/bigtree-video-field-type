@@ -151,7 +151,7 @@
 	// Using existing value
 	} else {
 		if ($field["input"]["existing"]) {
-			$field["output"] = json_decode($field["input"]["existing"]);
+			$field["output"] = json_decode($field["input"]["existing"],true);
 		} else {
 			$field["ignore"] = true;
 		}
