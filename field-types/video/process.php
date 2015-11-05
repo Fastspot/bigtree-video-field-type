@@ -134,7 +134,6 @@
 			
 			// Normally we'd fail, but it's not like you can create a higher resolution video clip here.
 			if ($width < $min_width || $height < $min_height) {
-				die("are we getting here?");
 				BigTree::createUpscaledImage($local_image_copy,$local_image_copy,$min_width,$min_height);
 			}
 
