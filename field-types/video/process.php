@@ -1,4 +1,4 @@
-<?
+<?	
 	/*
 		When processing a field type you are provided with the $field array with the following keys:
 			"key" — The key of the field (this could be the database column for a module or the ID of the template or callout resource)
@@ -149,8 +149,15 @@
 
 	// Using existing value
 	} else {
+		// Directly in the form, unchanged
 		if ($field["input"]["existing"]) {
 			$field["output"] = json_decode($field["input"]["existing"],true);
+
+		// For when use in a callout or matrix and unchanged
+		} elseif ($field["input"]["service"] && $field["input"]["id"]) {
+			$field["output"] = $field["input"];
+		
+		// Wiped
 		} else {
 			$field["ignore"] = true;
 		}
