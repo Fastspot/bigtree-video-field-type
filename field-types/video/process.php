@@ -159,7 +159,7 @@
 		
 		// Wiped
 		} else {
-			$field["ignore"] = true;
+			$field["output"] = null;
 		}
 	}
 ?>
